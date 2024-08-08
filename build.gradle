@@ -1,0 +1,50 @@
+plugins {
+    id 'java'
+}
+
+group = 'org.example'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.11.0'
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.34'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+task cleanBuild {
+    dependsOn clean, build
+    build.mustRunAfter clean
+
+    doLast {
+        println "cleanBuild completed"
+    }
+}
+
+build.doFirst {
+    println "The build task is running"
+}
+
+clean.doLast {
+    println "The clean task has completed"
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'org.example.Main'
+    }
+    from configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+}
+
+jar {
+    archiveBaseName.set('myname')
+}
+
+
